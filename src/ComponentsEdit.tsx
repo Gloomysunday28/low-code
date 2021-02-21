@@ -8,16 +8,6 @@ interface StyledProps {
   cursor?: string
 }
 
-const LowCodeEdit = styled.div`
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  border: 1px solid #1890ff;
-  border-radius: 2px;
-`
-
 const EditDot = styled.div`
   position: absolute;
   transform: translate(-50%, -50%);
@@ -58,9 +48,9 @@ export default function(): JSX.Element {
     }
   }
 
-  return <LowCodeEdit>
+  return <>
     {[...Array(8).keys()].map(key => <EditDot {...getCurrentStyles(key)} key={key}>
 
     </EditDot>)}
-  </LowCodeEdit>
+  </>
 }

@@ -7,6 +7,7 @@ const ButtonModel = lazy(() => import(`./Components/ButtonModel`))
 let contextRef: null | CanvasRenderingContext2D = null
 function App() {
   const canvasRef = useRef(null)
+  const {1: setUpdate} = useState<boolean>(false)
   const [ContainerComponents, setComponents] = useState<Array<LowComponentsProps>>([])
   const [currentDragComp, setCurrentComponent] = useState<LowComponentsProps>(null)
   const drop = (e, type: string) => {
@@ -22,9 +23,6 @@ function App() {
             key: `ButtonModel${randomKey}`,
             compKey: `ButtonModel${randomKey}`,
             name: '按钮',
-            styles: {
-              position: 'absolute',
-            },
             left: `${clientX - 240}px`,
             top: `${clientY - 30}px`,
             onDragStart: dropStart,
@@ -41,12 +39,9 @@ function App() {
     })
   }
 
-  const dropExist = (e: React.MouseEvent<HTMLDivElement>, type, key) => {
-    setComponents((components) => {
-      components = components.slice(0)
-      dropOver(e)
-      return components
-    })
+  const dropExist = (e: React.MouseEvent<HTMLDivElement>) => {
+    dropOver(e)
+    setUpdate(update => !update)
   }
 
   const dropStart = useEventCallback((e, key: string) => {
@@ -75,16 +70,14 @@ function App() {
         const cLeft = parseInt(left, 10)
         const cTop = parseInt(top, 10)
         if (startX < endX) {
-
+          if (startX < (width as number) + cLeft && startY < cTop + (height as number)) {
+            comp.edit = true
+          }
         } else {
-          console.log(startX)
-          console.log(startY)
-          console.log((width as number) + cLeft)
           if (endX < (width as number) + cLeft && endY < cTop + (height as number)) {
             comp.edit = true
           }
         }
-        // if (startX)
       })
       return components
     })
@@ -102,17 +95,17 @@ function App() {
 
   const selectCavanvs = useEventCallback((e) => {
     const { offsetX: startX, offsetY: startY } = e
-    canvasRef.current.onmousemove = function(event) {
-      const { offsetX, offsetY } = event
+    document.onmousemove = function(event) {
+      const { clientX, clientY } = event
       contextRef.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height)
       contextRef.beginPath()
-      contextRef.strokeRect(startX, startY, offsetX - startX, offsetY - startY)
+      contextRef.strokeRect(startX, startY, clientX - startX - 220, clientY - startY - 20)
       contextRef.strokeStyle = '#1890ff'
       contextRef.globalAlpha = 0.8
     }
     document.onmouseup = function(event) {
       const { offsetX, offsetY } = event
-      canvasRef.current.onmousemove = null
+      document.onmousemove = null
       contextRef.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height)
       contextRef.closePath()
       edgeCollision({
@@ -140,7 +133,7 @@ function App() {
           <ButtonModel name="按钮" key="ButtonModel" onDragEnd={drop}/>
         </Suspense>
       </div>
-      <div className="container" onDragOver={edgeCollision} >
+      <div className="container">
         <canvas ref={canvasRef}/>
         {ContainerComponents.map(renderComponents)}
       </div>

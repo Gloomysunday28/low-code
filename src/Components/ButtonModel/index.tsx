@@ -5,7 +5,7 @@ import LowCodeEdit from '@/ComponentsEdit'
 
 // Button Model
 export default memo(function(props: LowComponentsProps): JSX.Element {
-  const ButtonSyle: React.CSSProperties = useMemo(() => Object.assign(props.styles || {}, { left: props.left, top: props.top }), [props.left, props.top, props.styles])
+  const ButtonSyle: React.CSSProperties = useMemo(() => ({ position: 'absolute', left: props.left, top: props.top }), [props.left, props.top])
   const DragStart = useEventCallback((e: React.MouseEvent<HTMLDivElement>) => {
     props.onDragStart && props.onDragStart(e, props.compKey)
   }, [props.onDragStart])
@@ -15,7 +15,7 @@ export default memo(function(props: LowComponentsProps): JSX.Element {
   }, [props.onDragEnd])
 
   return <div className="m-components__container" style={ButtonSyle} onDragStart={DragStart} onDragEnd={DragEnd}>
-    <Button draggable={true} >
+    <Button draggable={true} style={props.styles}>
       {props.name}
     </Button>
     {props.edit && <LowCodeEdit />}
