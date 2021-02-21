@@ -36,3 +36,7 @@
   line-height: 30px;
   cursor: move;
 }
+
+.m-components__container {
+  position: relative;
+}
