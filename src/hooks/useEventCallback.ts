@@ -12,6 +12,7 @@ const useEventCallback = function(fn, devpendcies: Array<unknown> = []) {
 
   useEffect(() => {
     ref.current = fn
+    // eslint-disable-next-line
   }, devpendcies)
 
   return useCallback(function(...rest) {

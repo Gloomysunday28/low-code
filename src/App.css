@@ -1,24 +1,44 @@
+.g-lowcode__layout {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
 .App {
   text-align: center;
   display: flex;
   width: 100%;
-  height: 100vh;
   padding: 20px;
   box-sizing: border-box;
+  flex: 1;
+}
+
+.c-lowcode__header {
+  width: 100%;
+  height: 80px;
+  border-bottom: 1px solid #ccc;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
 }
 
 .components {
-  width: 200px;
+  width: 300px;
   border-right: 1px solid #ccc;
   padding: 0 10px;
   flex: none;
   box-sizing: border-box;
 }
 
-.container {
+.c-layout__container {
   flex: 1;
   position: relative;
   overflow: hidden;
+}
+
+.c-attributes__container {
+  width: 300px;
+  border-left: 1px solid #ccc;
 }
 
 .component {

@@ -15,6 +15,7 @@ const syncEvent = function(fn: any) {
 }
 const useDebounce = function(fn, delayTime = 300, immdiate, devpendcies = []) {
   const currentFn = syncEvent(debounce(fn, delayTime, immdiate))
+  // eslint-disable-next-line
   return useCallback(currentFn, devpendcies)
 }
 

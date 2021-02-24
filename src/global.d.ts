@@ -6,8 +6,8 @@ declare interface LowComponentsProps {
   type?: string,
   compKey?: string,
   name?: string | number,
-  left?: string,
-  top?: string,
+  left?: number,
+  top?: number,
   locked?: boolean,
   edit?: boolean, // 是否可以编辑
   styles?: React.CSSProperties,
@@ -15,4 +15,11 @@ declare interface LowComponentsProps {
   height?: number | string,
   onDragEnd?: (e, ...rest?) => void
   onDragStart?: (e, ...rest?) => void
+}
+
+declare module LowCodeHeader {
+  declare interface Commands {
+    action: () => any,
+    params?: {}
+  }
 }
