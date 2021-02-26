@@ -21,6 +21,7 @@ module.exports = {
       { "libraryName": "antd", "libraryDirectory": "es", "style": true },
       "antd"
       ],
+      "@compiled/babel-plugin",
       ["@babel/plugin-proposal-decorators", { "legacy": true }],
       ["@babel/plugin-proposal-class-properties", { "loose": true }],
       '@babel/plugin-syntax-dynamic-import'
@@ -34,6 +35,22 @@ module.exports = {
       '@utils': path.resolve(__dirname, 'src/utils'),
       '@hooks': path.resolve(__dirname, 'src/hooks'),
     },
+    configure: (webpackConfig) => {
+      webpackConfig.module.rules[1].oneOf.push(
+        {
+          test: /\.(js|ts|tsx)$/,
+          exclude: /node_modules/,
+          use: [
+            { loader: 'babel-loader' },
+            {
+              loader: '@compiled/webpack-loader',
+            },
+          ],
+        }
+      )
+      
+      return webpackConfig
+    }
   },
   plugins: [{
     plugin: CracoLessPlugin,

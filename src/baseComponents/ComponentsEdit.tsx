@@ -38,9 +38,16 @@ const EditDot = styled.div`
   })}
 `
 
+// 点的方向, 在左边以及上边的点在扩增面积时，需要固定右边方向不动，所以需要在更改width、height时同时需要更改left与top
 const dotDirectMap = new Map([
   [[0, 3, 5], 'left'],
   [[0, 1, 2], 'top'],
+])
+
+// 点拉动model的维度, 左右只能更改width，上下只能更改height
+const directMap = new Map([
+  [[1, 6], 'height'],
+  [[3, 4], 'width'],
 ])
 export default function ComponentsEdit(props: EditProps): JSX.Element {
   const getCurrentStyles = (key) => {
@@ -68,35 +75,56 @@ export default function ComponentsEdit(props: EditProps): JSX.Element {
     }
   }
 
+  const getDragDirect = useEventCallback((numberIndex) => {
+    const directSet = []
+    for (let [key, direct] of dotDirectMap.entries()) {
+      if (key.includes(numberIndex)) {
+        directSet.push(direct)
+      }
+    }
+
+    return directSet
+  }, [])
+
+  const getDragDimension = useEventCallback((numberIndex, { layout, width, height }) => {
+    let dimension = ''
+    for (let [key, direct] of directMap.entries()) {
+      if (key.includes(numberIndex)) {
+        dimension = direct
+      }
+    }
+
+    return dimension === 'width' ? {
+      width: (layout.width as number) + width
+    } : (dimension === 'height' ? {
+      height: (layout.height as number) + height
+    } : {
+      width: (layout.width as number) + width,
+      height: (layout.height as number) + height
+    })
+  }, [])
+
   const dragStart = useEventCallback((e) => {
     const { clientX: sX, clientY: sY, target: { dataset: { index } } } = e
     const numberIndex = +index
     document.onmousemove = function(event) {
       const { clientX, clientY } = event
-      const width = Math.abs(clientX - sX)
-      const height = Math.abs(clientY - sY)
-      if (width && height) {
-        let directSet = []
-        for (let [key, direct] of dotDirectMap.entries()) {
-          if (key.includes(numberIndex)) {
-            directSet.push(direct)
+      const width = clientX - sX
+      const height = clientY - sY
+      const directSet = getDragDirect(numberIndex)
+      const dimension = getDragDimension(numberIndex, { layout: props.layout, width: Math.abs(width), height: Math.abs(height) })
+      props.setLayout({
+        ...dimension,
+        ...directSet.reduce((params, direct, i) => {
+          if (numberIndex) {
+            params[direct] = (numberIndex > 2 ? props.left + width : props.top + height)
+          } else {
+            params[direct] = i ? props.top + height : props.left + width
           }
-        }
-
-        props.setLayout({
-          width: (props.layout.width as number) + width,
-          height: (props.layout.height as number) + height,
-          ...directSet.reduce((params, direct, i) => {
-            if (numberIndex) {
-              params[direct] = (numberIndex > 2 ? props.left - width : props.top - height)
-            } else {
-              params[direct] = i ? props.top - height : props.left - width
-            }
-            
-            return params
-          }, {})
-        })
-      }
+          
+          return params
+        }, {})
+      })
     }
     
     document.onmouseup = function() {

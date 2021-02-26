@@ -1,7 +1,8 @@
 import React, { useEffect, useState, useRef, lazy, Suspense } from 'react'
 import LowCodeHeader from '@/baseComponents/Header'
-import { useEventCallback, useProvider } from '@/hooks'
+import { useEventCallback } from '@/hooks'
 import Provider from '@/context'
+import '@compiled/react'
 import './App.css';
 
 const ButtonModel = lazy(() => import(`./components/ButtonModel`))
